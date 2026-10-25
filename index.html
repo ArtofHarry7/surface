@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f4">
+  <title>Routewise — Shipment planning</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Routewise home">
+        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 23.5 13.1 8l5.1 12 2.9-7 4.2 10.5"/><circle cx="7" cy="24" r="2.2"/><circle cx="13" cy="8" r="2.2"/><circle cx="18.2" cy="20" r="2.2"/><circle cx="21.1" cy="13" r="2.2"/><circle cx="25.3" cy="23.5" r="2.2"/></svg></span>
+        <span>routewise<span class="brand-dot">.</span><small>SHIPMENT PLANNER</small></span>
+      </a>
+
+      <div class="sidebar-label">WORKSPACE</div>
+      <button class="project-create" id="newProjectButton" type="button"><span aria-hidden="true">＋</span> New project</button>
+      <div id="projectList" class="project-list" aria-label="Planning projects"></div>
+
+      <div class="sidebar-bottom">
+        <span class="api-indicator" id="apiIndicator"><i></i><span>Connecting to API</span></span>
+        <button class="sidebar-settings" id="apiSettingsButton" type="button" title="Configure API address">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.1.9-1.1 1.9-1.3-.5a7.8 7.8 0 0 1-1.5.9l-.2 1.4h-2.2l-.3-1.4a7.8 7.8 0 0 1-1.5-.9l-1.3.5-1.1-1.9 1.1-.9a7.5 7.5 0 0 1 0-1.8l-1.1-.9 1.1-1.9 1.3.5a7.8 7.8 0 0 1 1.5-.9l.3-1.4h2.2l.2 1.4a7.8 7.8 0 0 1 1.5.9l1.3-.5 1.1 1.9-1.1.9a7.5 7.5 0 0 1 0 1.8Z"/></svg>
+          API settings
+        </button>
+        <div class="sidebar-note">Plan smarter.<br><span>Deliver with confidence.</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumbProject">Select a project</strong></div>
+        <div class="topbar-right"><span class="topbar-badge"><span class="sparkle">✳</span> Planning workspace</span><span class="avatar">RW</span></div>
+      </header>
+
+      <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+      <section id="welcomeView" class="welcome-view">
+        <div class="welcome-orb orb-one"></div><div class="welcome-orb orb-two"></div>
+        <div class="welcome-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> YOUR ROUTE, REIMAGINED</div>
+          <h1>Good plans make<br><em>great journeys.</em></h1>
+          <p>Build a shipment plan that works for your team, your fleet, and every stop along the way.</p>
+          <button class="button button-primary button-large" id="welcomeCreateButton" type="button">Create your first project <span>→</span></button>
+        </div>
+        <div class="welcome-art" aria-hidden="true">
+          <div class="art-route route-back"></div><div class="art-route route-front"></div>
+          <div class="art-pin pin-a"><span></span></div><div class="art-pin pin-b"><span></span></div><div class="art-pin pin-c"><span></span></div>
+          <div class="art-van"><svg viewBox="0 0 100 62"><path d="M11 13h48c5 0 8 3 8 8v8h12l14 14v9H11z" fill="currentColor"/><path d="M67 34h11l10 10H67z" fill="#f8f7f0"/><circle cx="29" cy="53" r="8" fill="#14382f"/><circle cx="76" cy="53" r="8" fill="#14382f"/><circle cx="29" cy="53" r="3" fill="#ecf4ea"/><circle cx="76" cy="53" r="3" fill="#ecf4ea"/><path d="M18 20h36v12H18z" fill="#e2eee3"/></svg></div>
+          <div class="art-label label-one">ORIGIN <b>01</b></div><div class="art-label label-two">DELIVERY <b>04</b></div>
+          <div class="art-sun"></div>
+        </div>
+        <div class="welcome-foot"><span>BUILT FOR THE WAY YOU MOVE</span><span>LOCATIONS · FLEET · ORDERS · ROUTES</span></div>
+      </section>
+
+      <section id="projectView" class="project-view" hidden>
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> PROJECT OVERVIEW</div>
+            <h1 id="projectTitle">Your project</h1>
+            <p id="projectSubtitle">Build your input, then create a plan whenever you’re ready.</p>
+          </div>
+          <button class="button button-primary" id="planButton" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 10h12m-5-5 5 5-5 5"/></svg> Plan this input</button>
+        </div>
+
+        <div class="summary-grid">
+          <article class="summary-card"><span class="summary-icon icon-green">⌖</span><div><span class="summary-label">LOCATIONS</span><strong id="locationCount">0</strong><small>pickup &amp; drop-off sites</small></div></article>
+          <article class="summary-card"><span class="summary-icon icon-blue">▰</span><div><span class="summary-label">VEHICLE TYPES</span><strong id="vehicleCount">0</strong><small id="vehicleCountDetail">0 vehicles available</small></div></article>
+          <article class="summary-card"><span class="summary-icon icon-amber">□</span><div><span class="summary-label">ORDERS</span><strong id="orderCount">0</strong><small>ready to be routed</small></div></article>
+          <article class="summary-card"><span class="summary-icon icon-purple">↗</span><div><span class="summary-label">PLANNINGS</span><strong id="planningCount">0</strong><small>saved plan snapshots</small></div></article>
+        </div>
+
+        <div class="workspace-grid">
+          <section class="panel input-panel">
+            <div class="panel-heading">
+              <div><div class="eyebrow">PLAN INPUT</div><h2>Build your shipment</h2></div>
+              <span class="save-state" id="saveState"><i></i> All changes saved</span>
+            </div>
+            <div class="tab-bar" role="tablist" aria-label="Planning input">
+              <button class="tab-button active" data-tab="orders" role="tab" aria-selected="true" type="button">Orders <span id="ordersTabCount">0</span></button>
+              <button class="tab-button" data-tab="locations" role="tab" aria-selected="false" type="button">Locations <span id="locationsTabCount">0</span></button>
+              <button class="tab-button" data-tab="fleet" role="tab" aria-selected="false" type="button">Fleet <span id="fleetTabCount">0</span></button>
+              <button class="tab-button" data-tab="constraints" role="tab" aria-selected="false" type="button">Constraints</button>
+              <button class="tab-button" data-tab="import" role="tab" aria-selected="false" type="button">Import</button>
+            </div>
+            <div id="tabContent" class="tab-content"></div>
+          </section>
+
+          <aside class="panel readiness-panel">
+            <div class="panel-heading"><div><div class="eyebrow">PLAN READINESS</div><h2>Before you plan</h2></div><span class="readiness-emoji">✦</span></div>
+            <p class="panel-subtitle">A quick check of what your input needs.</p>
+            <div id="readinessList" class="readiness-list"></div>
+            <button class="button button-primary readiness-button" id="readinessPlanButton" type="button">Create a plan <span>→</span></button>
+            <div class="snapshot-note"><span>◷</span><p>Each plan saves a snapshot. Your next edits won’t change previous plans.</p></div>
+            <div class="history-heading"><span>RECENT PLANNINGS</span><button id="refreshPlanningsButton" type="button" title="Refresh plannings">↻</button></div>
+            <div id="planningHistory" class="planning-history"></div>
+          </aside>
+        </div>
+        <footer class="main-footer"><span>ROUTEWISE <b>·</b> SHIPMENT PLANNING</span><span id="updatedAtLabel">CURRENT INPUT</span></footer>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="projectDialog" class="modal">
+    <form id="projectForm" method="dialog">
+      <div class="modal-top"><span class="modal-icon">✳</span><button class="icon-button close-modal" type="button" aria-label="Close">×</button></div>
+      <div class="eyebrow">START A NEW JOURNEY</div><h2>Create a project</h2>
+      <p>Give this planning workspace a name. You can add locations, vehicles, and orders next.</p>
+      <label class="field-label" for="projectName">Project name</label>
+      <input class="text-input" id="projectName" maxlength="120" placeholder="e.g. West Coast deliveries" required>
+      <div class="modal-actions"><button class="button button-secondary close-modal" type="button">Cancel</button><button class="button button-primary" type="submit">Create project <span>→</span></button></div>
+    </form>
+  </dialog>
+
+  <dialog id="entityDialog" class="modal entity-modal">
+    <form id="entityForm" method="dialog">
+      <div class="modal-top"><span class="modal-icon" id="entityIcon">＋</span><button class="icon-button close-modal" type="button" aria-label="Close">×</button></div>
+      <div class="eyebrow" id="entityEyebrow">PROJECT INPUT</div><h2 id="entityTitle">Add item</h2>
+      <div id="entityFields" class="form-grid"></div>
+      <div class="modal-actions"><button class="button button-secondary close-modal" type="button">Cancel</button><button class="button button-primary" type="submit" id="entitySubmit">Save item</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="resultDialog" class="modal result-modal">
+    <div class="modal-top"><span class="modal-icon">↗</span><button class="icon-button close-modal" type="button" aria-label="Close">×</button></div>
+    <div class="eyebrow">PLANNING RESULT</div><h2 id="resultTitle">Plan complete</h2>
+    <p id="resultSummary">Your route plan is ready.</p>
+    <div id="resultMetrics" class="result-metrics"></div>
+    <div class="result-actions"><button id="downloadExcelButton" class="button button-secondary" type="button"><span>↓</span> Download Excel</button><button id="viewJsonButton" class="button button-primary" type="button">View JSON <span>↗</span></button></div>
+    <pre id="resultJson" class="result-json" hidden></pre>
+  </dialog>
+
+  <dialog id="apiDialog" class="modal">
+    <form id="apiForm" method="dialog">
+      <div class="modal-top"><span class="modal-icon">⌘</span><button class="icon-button close-modal" type="button" aria-label="Close">×</button></div>
+      <div class="eyebrow">CONNECTION</div><h2>API settings</h2>
+      <p>Point the workspace to your Planning backend. Usually this is <code>http://localhost:8080</code>.</p>
+      <label class="field-label" for="apiBaseInput">Backend URL</label>
+      <input class="text-input" id="apiBaseInput" type="url" placeholder="http://localhost:8080" required>
+      <div class="modal-actions"><button class="button button-secondary close-modal" type="button">Cancel</button><button class="button button-primary" type="submit">Save connection</button></div>
+    </form>
+  </dialog>
+</body>
+</html>
