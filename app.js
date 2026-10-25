@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const DEFAULT_API = "http://localhost:8080";
+  const DEFAULT_API = import.meta.env.DEV ? "" : import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
   const API_KEY = "routewise.apiBase";
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -660,26 +660,6 @@
     }
   }
 
-  async function createProject(event) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const name = $("#projectName").value.trim();
-    if (!name) return;
-    const button = $("button[type=submit]", form);
-    setBusy(button, true, "Creating…");
-    try {
-      const project = await api("/api/projects", jsonOptions("POST", { name }));
-      closeDialog(projectDialog);
-      form.reset();
-      await loadProjects(project.id);
-      toast(`Project “${project.name}” created.`);
-    } catch (error) {
-      toast(error.message, "error");
-    } finally {
-      setBusy(button, false);
-    }
-  }
-
   function bindEvents() {
     $("#newProjectButton").addEventListener("click", () => openDialog(projectDialog));
     $("#welcomeCreateButton").addEventListener("click", () => openDialog(projectDialog));
@@ -712,7 +692,10 @@
       else if (action === "delete-vehicle") removeEntity("vehicle", button.dataset.id);
       else if (action === "delete-order") removeEntity("order", button.dataset.id);
     });
-    $("#projectForm").addEventListener("submit", createProject);
+    window.addEventListener("routewise:project-created", event => {
+      const project = event.detail;
+      void loadProjects(project.id).then(() => toast(`Project “${project.name}” created.`));
+    });
     $("#entityForm").addEventListener("submit", saveEntity);
     $("#tabContent").addEventListener("submit", event => {
       if (event.target.id === "constraintsForm") saveConstraints(event);

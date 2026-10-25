@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f7f4">
   <title>Routewise — Shipment planning</title>
-  <link rel="stylesheet" href="/styles.css">
-  <script src="/app.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -105,14 +103,7 @@
   </div>
 
   <dialog id="projectDialog" class="modal">
-    <form id="projectForm" method="dialog">
-      <div class="modal-top"><span class="modal-icon">✳</span><button class="icon-button close-modal" type="button" aria-label="Close">×</button></div>
-      <div class="eyebrow">START A NEW JOURNEY</div><h2>Create a project</h2>
-      <p>Give this planning workspace a name. You can add locations, vehicles, and orders next.</p>
-      <label class="field-label" for="projectName">Project name</label>
-      <input class="text-input" id="projectName" maxlength="120" placeholder="e.g. West Coast deliveries" required>
-      <div class="modal-actions"><button class="button button-secondary close-modal" type="button">Cancel</button><button class="button button-primary" type="submit">Create project <span>→</span></button></div>
-    </form>
+    <div id="projectCreateRoot"></div>
   </dialog>
 
   <dialog id="entityDialog" class="modal entity-modal">
@@ -139,9 +130,10 @@
       <div class="eyebrow">CONNECTION</div><h2>API settings</h2>
       <p>Point the workspace to your Planning backend. Usually this is <code>http://localhost:8080</code>.</p>
       <label class="field-label" for="apiBaseInput">Backend URL</label>
-      <input class="text-input" id="apiBaseInput" type="url" placeholder="http://localhost:8080" required>
+      <input class="text-input" id="apiBaseInput" type="url" placeholder="Leave blank to use the local API proxy">
       <div class="modal-actions"><button class="button button-secondary close-modal" type="button">Cancel</button><button class="button button-primary" type="submit">Save connection</button></div>
     </form>
   </dialog>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

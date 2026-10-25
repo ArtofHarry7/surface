@@ -1,28 +1,52 @@
 # Routewise Surface
 
-A dependency-free responsive UI for the Planning API. It provides project
-management, incremental locations/fleet/orders/constraints, Excel input,
-planning submission and history, and JSON/XLSX results.
+A responsive UI for the Planning API. The interface is being migrated
+incrementally to React and TypeScript; existing workflows continue to work
+during the transition.
 
 ## Run locally
 
-1. Start the Planning backend from the Planning repository:
+1. Install Node.js 20.19+ or 22.12+.
+
+2. Install the frontend dependencies:
+
+   ```sh
+   npm install
+   ```
+
+3. Start the Planning backend from the Planning repository:
 
    ```sh
    bash ./mvnw spring-boot:run
    ```
 
-2. From this repository, start a static server on port 3000:
+4. Start the frontend development server:
 
    ```sh
-   python3 -m http.server 3000
+   npm run dev
    ```
 
-3. Open <http://localhost:3000>.
+5. Open the URL printed by Vite (normally <http://localhost:5173>).
 
-The backend already permits the UI origin `http://localhost:3000`. The default
-API address is `http://localhost:8080`; use **API settings** in the sidebar to
-change it. The selected API address is stored in this browser.
+During development, `/api` requests are proxied to `http://localhost:8080` to
+avoid browser CORS configuration. Set `VITE_API_PROXY_TARGET` in the shell to
+use another local backend address. The **API settings** field can override the
+proxy with a full API URL; that value is stored in this browser.
+For a fixed deployment API address, set `VITE_API_BASE_URL` at build time.
+
+## Quality checks
+
+```sh
+npm run lint
+npm test
+npm run build
+```
+
+## Migration status
+
+The project-creation dialog and API call are the first React/TypeScript slice.
+The remaining planning workspace is still served by the existing JavaScript
+and is intentionally left functional while it is migrated in later steps.
 
 ## Using the workspace
 
