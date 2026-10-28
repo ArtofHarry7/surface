@@ -282,45 +282,45 @@
     const content = $("#tabContent");
     if (!input.orders.length) {
       content.innerHTML = `${tabHeader("Shipment orders", "Define what needs to move and when.", "Add order", "add-order", input.locations.length < 1)}
-        ${emptyState("□", "Your route starts with an order", input.locations.length < 1
+        <div class="tab-body-scroll">${emptyState("□", "Your route starts with an order", input.locations.length < 1
           ? "Add a location first, then connect an order to existing pickup and drop-off sites."
-          : "Add your first shipment with its pickup, drop-off, and delivery windows.", input.locations.length >= 1 ? "add-order" : "", "Add your first order")}`;
+          : "Add your first shipment with its pickup, drop-off, and delivery windows.", input.locations.length >= 1 ? "add-order" : "", "Add your first order")}</div>`;
       return;
     }
     content.innerHTML = `${tabHeader("Shipment orders", `${input.orders.length} orders in this input.`, "Add order", "add-order", input.locations.length < 1)}
-      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>ORDER</th><th>ROUTE</th><th>WEIGHT / VOLUME</th><th>PICKUP WINDOW</th><th></th></tr></thead><tbody>
+      <div class="tab-body-scroll"><div class="data-table-wrap"><table class="data-table"><thead><tr><th>ORDER</th><th>ROUTE</th><th>WEIGHT / VOLUME</th><th>PICKUP WINDOW</th><th></th></tr></thead><tbody>
       ${input.orders.map(order => {
         const origin = input.locations.find(location => location.id === order.originLocationId);
         const destination = input.locations.find(location => location.id === order.destinationLocationId);
         return `<tr><td>#${esc(order.id)}</td><td>${esc(order.originLocationId)} → ${esc(order.destinationLocationId)}<span class="cell-sub">${origin ? `${origin.latitude.toFixed(2)}, ${origin.longitude.toFixed(2)}` : "Unknown"} → ${destination ? `${destination.latitude.toFixed(2)}, ${destination.longitude.toFixed(2)}` : "Unknown"}</span></td><td>${Number(order.weightPounds).toLocaleString()} lb<span class="cell-sub">${Number(order.volumeCubicFeet).toLocaleString()} ft³</span></td><td>${esc(fmtWindow(order.pickupWindow))}</td><td>${rowActions("order", order.id)}</td></tr>`;
-      }).join("")}</tbody></table></div>`;
+      }).join("")}</tbody></table></div></div>`;
   }
 
   function renderLocations() {
     const locations = inputState().locations;
     if (!locations.length) {
       $("#tabContent").innerHTML = `${tabHeader("Pickup & drop-off sites", "Locations can be added independently.", "Add location", "add-location")}
-        ${emptyState("⌖", "No locations yet", "Add your shipping sites first. Orders will use these locations for pickup and drop-off.", "add-location", "Add your first location")}`;
+        <div class="tab-body-scroll">${emptyState("⌖", "No locations yet", "Add your shipping sites first. Orders will use these locations for pickup and drop-off.", "add-location", "Add your first location")}</div>`;
       return;
     }
     $("#tabContent").innerHTML = `${tabHeader("Pickup & drop-off sites", `${locations.length} locations in this input.`, "Add location", "add-location")}
-      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>LOCATION ID</th><th>LATITUDE</th><th>LONGITUDE</th><th>ORDERS USING SITE</th><th></th></tr></thead><tbody>
+      <div class="tab-body-scroll"><div class="data-table-wrap"><table class="data-table"><thead><tr><th>LOCATION ID</th><th>LATITUDE</th><th>LONGITUDE</th><th>ORDERS USING SITE</th><th></th></tr></thead><tbody>
       ${locations.map(location => {
         const used = inputState().orders.filter(order => order.originLocationId === location.id || order.destinationLocationId === location.id).length;
         return `<tr><td>${esc(location.id)}</td><td>${Number(location.latitude).toFixed(5)}</td><td>${Number(location.longitude).toFixed(5)}</td><td>${used}</td><td>${rowActions("location", location.id)}</td></tr>`;
-      }).join("")}</tbody></table></div>`;
+      }).join("")}</tbody></table></div></div>`;
   }
 
   function renderFleet() {
     const fleet = inputState().fleet;
     if (!fleet.length) {
       $("#tabContent").innerHTML = `${tabHeader("Vehicle types", "Fleet availability is independent of locations.", "Add vehicle", "add-vehicle")}
-        ${emptyState("▰", "Your fleet is waiting", "Add vehicle types with their capacity, cost, and how many are available.", "add-vehicle", "Add a vehicle type")}`;
+        <div class="tab-body-scroll">${emptyState("▰", "Your fleet is waiting", "Add vehicle types with their capacity, cost, and how many are available.", "add-vehicle", "Add a vehicle type")}</div>`;
       return;
     }
     $("#tabContent").innerHTML = `${tabHeader("Vehicle types", `${fleet.reduce((sum, item) => sum + item.count, 0)} vehicles across ${fleet.length} types.`, "Add vehicle", "add-vehicle")}
-      <div class="data-table-wrap"><table class="data-table"><thead><tr><th>VEHICLE</th><th>AVAILABLE</th><th>WEIGHT LIMIT</th><th>VOLUME LIMIT</th><th>FIXED COST</th><th></th></tr></thead><tbody>
-      ${fleet.map(vehicle => `<tr><td>${esc(vehicle.name)}<span class="cell-sub">Type #${esc(vehicle.id)}</span></td><td>${esc(vehicle.count)}</td><td>${Number(vehicle.weightLimit).toLocaleString()} lb</td><td>${Number(vehicle.volumeLimit).toLocaleString()} ft³</td><td>${Number(vehicle.cost).toLocaleString()}</td><td>${rowActions("vehicle", vehicle.id)}</td></tr>`).join("")}</tbody></table></div>`;
+      <div class="tab-body-scroll"><div class="data-table-wrap"><table class="data-table"><thead><tr><th>VEHICLE</th><th>AVAILABLE</th><th>WEIGHT LIMIT</th><th>VOLUME LIMIT</th><th>FIXED COST</th><th></th></tr></thead><tbody>
+      ${fleet.map(vehicle => `<tr><td>${esc(vehicle.name)}<span class="cell-sub">Type #${esc(vehicle.id)}</span></td><td>${esc(vehicle.count)}</td><td>${Number(vehicle.weightLimit).toLocaleString()} lb</td><td>${Number(vehicle.volumeLimit).toLocaleString()} ft³</td><td>${Number(vehicle.cost).toLocaleString()}</td><td>${rowActions("vehicle", vehicle.id)}</td></tr>`).join("")}</tbody></table></div></div>`;
   }
 
   function rowActions(type, id) {
@@ -336,7 +336,7 @@
   function renderConstraints() {
     const current = inputState().constraints || defaultConstraints;
     $("#tabContent").innerHTML = `<div class="tab-title-row"><div><h3>Planning constraints</h3><p>${inputState().constraints ? "Adjust how the planner builds and scores routes." : "Suggested values are prefilled. Save to make this input plan-ready."}</p></div></div>
-      <form id="constraintsForm" class="constraints-grid">
+      <div class="tab-body-scroll"><form id="constraintsForm" class="constraints-grid">
         ${constraintFields.map(field => {
           if (field.type === "checkbox") return `<label class="toggle-field">${field.label}<input class="toggle" type="checkbox" name="${field.name}" ${current[field.name] ? "checked" : ""}></label>`;
           const input = field.type === "select"
@@ -345,13 +345,13 @@
           return `<div class="constraint-field"><label for="constraint-${field.name}">${field.label}</label>${input.replace(`name="${field.name}"`, `name="${field.name}" id="constraint-${field.name}"`)}</div>`;
         }).join("")}
         <div class="constraint-actions"><button class="button button-primary button-small" type="submit">Save constraints <span>→</span></button></div>
-      </form>`;
+      </form></div>`;
   }
 
   function renderImport() {
     const hasConstraints = !!inputState().constraints;
     $("#tabContent").innerHTML = `<div class="tab-title-row"><div><h3>Start from a spreadsheet</h3><p>Import locations, fleet, and orders into this project.</p></div></div>
-      <form id="importForm">
+      <div class="tab-body-scroll"><form id="importForm">
         <label class="import-drop" id="importDrop" for="workbookFile">
           <input id="workbookFile" type="file" accept=".xlsx,.xls" required>
           <span><span class="import-icon">↑</span><h3>Drop your workbook here</h3><p>or <span style="color:#4d805a;font-weight:600">browse files</span> · Excel workbook</p><p class="import-filename" id="importFilename"></p></span>
@@ -360,7 +360,7 @@
           ? "Import replaces the project’s current locations, fleet, orders, and constraints. Your existing plannings are not affected."
           : "Save planning constraints first. Excel import requires the complete constraints object."}</div>
         <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="button button-primary button-small" type="submit" ${hasConstraints ? "" : "disabled"}>Replace input from Excel <span>→</span></button></div>
-      </form>`;
+      </form></div>`;
     const fileInput = $("#workbookFile");
     fileInput.addEventListener("change", () => {
       $("#importFilename").textContent = fileInput.files?.[0]?.name || "";

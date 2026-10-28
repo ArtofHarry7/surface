@@ -101,26 +101,30 @@ button { cursor: pointer; }
 .summary-card small { display: block; color: #919c95; font-size: 9px; }
 .workspace-grid { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(255px, .82fr); align-items: start; gap: 17px; }
 .panel { border: 1px solid #e9ede8; border-radius: 11px; background: #fff; box-shadow: 0 4px 18px #20392a05; }
-.input-panel { overflow: hidden; min-height: 475px; }
+.input-panel { display: flex; flex-direction: column; overflow: hidden; min-height: 475px; max-height: min(72vh, 760px); }
 .panel-heading { min-height: 81px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 17px 20px 14px; }
 .panel-heading .eyebrow { font-size: 8px; letter-spacing: 1.5px; }
 .panel-heading h2 { margin: 5px 0 0; font: 700 16px "Manrope", sans-serif; letter-spacing: -.4px; }
 .save-state { color: #829087; font-size: 9px; white-space: nowrap; }
 .save-state i { display: inline-block; width: 6px; height: 6px; margin-right: 5px; background: #70a77d; border-radius: 50%; }
-.tab-bar { display: flex; gap: 21px; padding: 0 20px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab-bar { display: flex; flex: 0 0 auto; gap: 21px; padding: 0 20px; border-bottom: 1px solid var(--line); overflow-x: auto; }
 .tab-button { position: relative; flex: 0 0 auto; padding: 0 0 12px; background: transparent; border: 0; color: #89958d; font-size: 10px; font-weight: 600; }
 .tab-button.active { color: #285d43; }
 .tab-button.active::after { content: ""; position: absolute; height: 2px; left: 0; right: 0; bottom: -1px; border-radius: 4px; background: #3e8058; }
 .tab-button span { display: inline-grid; place-items: center; min-width: 17px; height: 17px; margin-left: 4px; border-radius: 6px; background: #f1f4f0; color: #829087; font-size: 8px; }
-.tab-content { padding: 18px 20px 22px; }
+.tab-content { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow: hidden; padding: 18px 20px 22px; }
 .tab-title-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.tab-body-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; }
 .tab-title-row h3 { margin: 0; font: 700 12px "Manrope", sans-serif; }
 .tab-title-row p { margin: 4px 0 0; color: #929d96; font-size: 9px; }
 .button-small { min-height: 31px; padding: 0 10px; font-size: 9px; }
 .button-small .plus { font-size: 15px; font-weight: 400; line-height: 10px; }
-.data-table-wrap { overflow: auto; border: 1px solid #edf0ec; border-radius: 8px; }
-.data-table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
-.data-table th { padding: 9px 11px; background: #fafbf9; border-bottom: 1px solid #edf0ec; color: #9aa49e; font-size: 8px; font-weight: 700; letter-spacing: .7px; }
+.data-table-wrap { overflow: visible; border: 1px solid #edf0ec; border-top: 0; border-radius: 8px; }
+.data-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; white-space: nowrap; }
+.data-table thead { position: sticky; top: 0; z-index: 2; background: #fafbf9; }
+.data-table th { padding: 9px 11px; background: #fafbf9; border-top: 1px solid #edf0ec; border-bottom: 1px solid #edf0ec; color: #9aa49e; font-size: 8px; font-weight: 700; letter-spacing: .7px; }
+.data-table th:first-child { border-top-left-radius: 7px; }
+.data-table th:last-child { border-top-right-radius: 7px; }
 .data-table td { padding: 10px 11px; border-bottom: 1px solid #f0f2ef; color: #526259; font-size: 10px; }
 .data-table tr:last-child td { border-bottom: 0; }
 .data-table td:first-child { color: #344b3e; font-weight: 600; }
